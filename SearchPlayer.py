@@ -30,11 +30,17 @@ def scan_key(root_dir, output_file):
     folder_infos = []  # 用于收集所有的文件夹信息
     for subdir, dirs, files in os.walk(user_dir):
         # 检查当前目录是否是“双线区”或“电信区”
-        if subdir.endswith(os.sep + "双线区") or subdir.endswith(os.sep + "电信区"):
+        if subdir.endswith(os.sep + "双线区") or subdir.endswith(os.sep + "电信区") or subdir.endswith(os.sep + "无界区"):
             # 如果是，提取上一级目录名称作为账号名
             account = os.path.basename(os.path.dirname(subdir))
             # 确定大区名称
-            server = "双线区" if subdir.endswith(os.sep + "双线区") else "电信区"
+            if subdir.endswith(os.sep + "双线区"):
+                server = "双线区"
+
+            elif subdir.endswith(os.sep + "电信区"):
+                server = "电信区"
+            else:
+                server = "无界区"
             # 遍历“双线区”或“电信区”下的所有直接子目录
             for dir_name in dirs:
                 character_dir = os.path.join(subdir, dir_name)
@@ -75,7 +81,7 @@ def clean_empty_file_directories(root_dir):
                         shutil.rmtree(subsubdir_path)
 
             # 检查并删除每个子文件夹中的空的 电信区 或 双线区 文件夹
-            for specific_folder in ['电信区', '双线区']:
+            for specific_folder in ['电信区', '双线区', '无界区']:
                 specific_folder_path = os.path.join(subdir_path, specific_folder)
                 if os.path.exists(specific_folder_path) and os.path.isdir(specific_folder_path):
                     if not os.listdir(specific_folder_path):
